@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\News;
 use App\Http\Resources\News as NewsResource;
 use App\Http\Requests;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class NewsController extends Controller
 {
@@ -17,7 +18,7 @@ class NewsController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page') ? $request->get('per_page') : 5;
-        $news = News::paginate($perPage);
+        $news = QueryBuilder::for(News::class)->allowedSorts('title')->allowedFilters(['title', 'article'])->paginate($perPage)->appends(request()->query());
         return NewsResource::collection($news);
     }
 
