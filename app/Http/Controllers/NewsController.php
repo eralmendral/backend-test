@@ -11,12 +11,13 @@ class NewsController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $news = News::paginate(10);
+        $perPage = $request->get('per_page') ? $request->get('per_page') : 5;
+        $news = News::paginate($perPage);
         return NewsResource::collection($news);
     }
 
@@ -82,6 +83,7 @@ class NewsController extends Controller
         $request->validate([
             'title'=>'required',
             'article'=>'required',
+            'is_published'=>'required',
         ]);
 
         $data->title = $request->input('title');
